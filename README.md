@@ -1,2 +1,0 @@
-# opentsdb
-opentsdb

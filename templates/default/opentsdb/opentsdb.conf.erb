@@ -1,0 +1,238 @@
+# --------- NETWORK ----------
+# The TCP port TSD should use for communications
+# *** REQUIRED SECTION ***
+<% if @config.port %>
+tsd.network.port = <%= @config.port %>
+<% end %>
+
+<% if @config.bind %>
+# The IPv4 network address to bind to, defaults to all addresses
+tsd.network.bind = <%= @config.bind %>
+<% end %>
+
+<% if @config.network_tcpnodelay %>
+# Enables Nagel's algorithm to reduce the number of packets sent over the
+# network, default is True
+tsd.network.tcpnodelay = <%= @config.network_tcpnodelay %>
+<% end %>
+
+# Determines whether or not to send keepalive packets to peers, default
+# is True
+<% if @config.network_keepalive %>
+tsd.network.keepalive = <%= @config.network_keepalive %>
+<% end %>
+
+# Determines if the same socket should be used for new connections, default
+# is True
+<% if @config.network_reuseaddress %>
+tsd.network.reuseaddress = <%= @config.network_reuseaddress %>
+<% end %>
+# Number of worker threads dedicated to Netty, defaults to # of CPUs * 2
+<% if @config.network_worker_threads %>
+tsd.network.worker_threads = <%= @conifg.network_worker_threads %>
+<% else %>
+#tsd.network.worker_threads = 8
+<% end %>
+
+# Whether or not to use NIO or tradditional blocking IO, defaults to True
+<% if @config.network_async_io %>
+tsd.network.async_io = <%= @config.network_async_io %>
+<% end %>
+
+# *** OPTIONAL SECTION ***
+
+# The connection queue depth for completed or incomplete connection requests depending on OS. The default may be limited by the 'somaxconn' kernel setting or set by Netty to 3072
+<% if @config.network_backlog %>
+tsd.network.backlog = <%= @config.network_backlog %>
+<% end %>
+
+# ----------- HTTP -----------
+# The location of static files for the HTTP GUI interface.
+# *** REQUIRED SECTION***
+tsd.http.staticroot = /usr/share/opentsdb/static/
+
+# Where TSD should write it's cache files to
+tsd.http.cachedir = /tmp/opentsdb
+
+# *** OPTIONAL SECTION ***
+# A comma separated list of domain names to allow access to OpenTSDB when the Origin header is specified by the client. If empty, CORS requests are passed through without validation. The list may not contain the public wildcard * and specific domains at the same time.
+<% if @config.http_request_cors_domains %>
+tsd.http.request.cors_domains = <%= @config.http_request_cors_domains %>
+<% end %>
+
+# A comma separated list of headers sent to clients when executing a CORs request. The literal value of this option will be passed to clients. 
+<% if @config.http_request_cors_headers %>
+tsd.http.request.cors_headers = <%= @config.http_request_cors_headers %>
+<% end %>
+
+# Whether or not to enable incoming chunk support for the HTTP RPC
+<% if @config.http_request_enable_chunked %>
+tsd.http.request.enable_chunked = <%= @config.http_request_enable_chunked %>
+<% end %>
+
+# The maximum request body size to support for incoming HTTP requests when chunking is enabled.
+<% if @config.http_request_max_chunk %>
+tsd.http.request.max_chunk = <%= @config.http_request_max_chunk %>
+<% end %>
+
+# Whether or not to return the stack trace with an API query response when an exception occurs.
+<% if @config.http_show_stack_trace %>
+tsd.http.show_stack_trace = <%= @config.http_show_stack_trace %>
+<% end %>
+
+# --------- CORE ----------
+# *** REQUIRED SECTION***
+<% if @config.core_auto_create_metrics %>
+# Whether or not to automatically create UIDs for new metric types, default
+# is False
+tsd.core.auto_create_metrics = <%= @config.core_auto_create_metrics %>
+<% end %>
+
+<% if @config.core_plugin_path %>
+# Full path to a directory containing plugins for OpenTSDB
+tsd.core.plugin_path = <%= @config.core_plugin_path %>
+<% end %>
+
+# *** OPTIONAL SECTION ***
+<% if @config.core_auto_create_tagks %>
+# Whether or not a data point with a new tag name will assign a UID to the tagk. When false, a data point with a tag name that is not in the database will be rejected and an exception will be thrown.
+tsd.core.auto_create_tagks = <%= @config.core_auto_create_tagks %>
+<% end %>
+
+<% if @config.core_auto_create_tagvs %>
+# Whether or not a data point with a new tag value will assign a UID to the tagv. When false, a data point with a tag value that is not in the database will be rejected and an exception will be thrown.
+tsd.core.auto_create_tagvs = <%= @config.core_auto_create_tagvs %>
+<% end %>
+
+<% if @config.core_meta_enable_realtime_ts %>
+# Whether or not to enable real-time TSMeta object creation. See: http://opentsdb.net/docs/build/html/user_guide/metadata.html
+tsd.core.meta.enable_realtime_ts = <%= @config.core_meta_enable_realtime_ts %>
+<% end %>
+
+<% if @config.core_meta_enable_realtime_uid %>
+# Whether or not to enable real-time UIDMeta object creation. See: http://opentsdb.net/docs/build/html/user_guide/metadata.html
+tsd.core.meta.enable_realtime_uid = <%= @config.core_meta_enable_realtime_uid %>
+<% end %>
+
+<% if @config.core_meta_enable_tsuid_incrementing %>
+# Whether or not to enable tracking of TSUIDs by incrementing a counter every time a data point is recorded. See: http://opentsdb.net/docs/build/html/user_guide/metadata.html (Overrides "tsd.core.meta.enable_tsuid_tracking")
+tsd.core.meta.enable_tsuid_incrementing = <%= @config.core_meta_enable_tsuid_incrementing %>
+<% end %>
+
+<% if @config.core_meta_enable_tsuid_tracking %>
+# Whether or not to enable tracking of TSUIDs by storing a 1 with the current timestamp every time a data point is recorded. See: http://opentsdb.net/docs/build/html/user_guide/metadata.html
+tsd.core.meta.enable_tsuid_tracking = <%= @config.core_meta_enable_tsuid_tracking %>
+<% end %>
+
+<% if @config.core_preload_uid_cache %>
+# Enables pre-population of the UID caches when starting a TSD.
+tsd.core.preload_uid_cache = <%= @config.core_preload_uid_cache %>
+<% end %>
+
+<% if @config.core_preload_uid_cache = true %>
+# The number of rows to scan for UID pre-loading.
+tsd.core.preload_uid_cache.max_entries = <%= @config.core_preload_uid_cache_max_entries %>
+<% end %>
+
+<% if @config.core_timezone %>
+# A localized timezone identification string used to override the local system timezone used when converting absolute times to UTC when executing a query. This does not affect incoming data timestamps. E.g. America/Los_Angeles
+tsd.core.timezone = <%= @config.core_timezone %>
+<% end %>
+
+<% if @config.core_tree_enable_processing %>
+# Whether or not to enable processing new/edited TSMeta through tree rule sets
+tsd.core.tree.enable_processing = <%= @config.core_tree_enable_processing %>
+<% end %>
+
+<% if @config.core_uid_random_metrics %>
+# Whether or not to randomly assign UIDs to new metrics as they are created
+tsd.core.uid.random_metrics = <%= @config.core_uid_random_metrics %>
+<% end %>
+
+# --------- STORAGE ----------
+# *** OPTIONAL SECTION ***
+<% if @config.storage_enable_compaction %>
+# Whether or not to enable data compaction in HBase, default is True
+tsd.storage.enable_compaction = <%= @config.storage_enable_compaction %>
+<% end %>
+
+<% if @config.storage_flush_interval %>
+# How often, in milliseconds, to flush the data point queue to storage,
+# default is 1,000
+tsd.storage.flush_interval = <%= @config.storage_flush_interval %>
+<% end %>
+
+<% if @config.storage_hbase_data_table %>
+# Name of the HBase table where data points are stored, default is "tsdb"
+tsd.storage.hbase.data_table = <%= @config.storage_hbase_data_table %>
+<% end %>
+
+<% if @config.storage_hbase_meta_table %>
+# Name of the HBase table where meta data are stored
+tsd.storage.hbase.meta_table = <%= @config.storage_hbase_meta_table %>
+<% end %>
+
+<% if @config.storage_hbase_tree_table %>
+# Name of the HBase table where tree data are stored
+tsd.storage.hbase.tree_table = <%= @config.storage_hbase_tree_table %>
+<% end %>
+
+<% if @config.storage_hbase_uid_table %>
+# Name of the HBase table where UID information is stored, default is "tsdb-uid"
+tsd.storage.hbase.uid_table = <%= @config.storage_hbase_uid_table %>
+<% end %>
+
+<% if @config.storage_hbase_zk_basedir %>
+# Path under which the znode for the -ROOT- region is located, default is "/hbase"
+tsd.storage.hbase.zk_basedir = <%= @config.storage_hbase_zk_basedir %>
+<% end %>
+
+<% if @config.storage_hbase_zk_quroum %>
+# A space separated list of Zookeeper hosts to connect to, with or without
+# port specifiers, default is "localhost"
+tsd.storage.hbase.zk_quorum = <%= @config.storage_hbase_zk_quroum %>
+<% end %>
+
+<% if @config.storage_fix_duplicates %>
+# Whether or not to accept the last written value when parsing data points with duplicate timestamps. When enabled in conjunction with compactions, a compacted column will be written with the latest data points.
+tsd.storage.fix_duplicates = <%= @config.storage_fix_duplicates %>
+<% end %>
+
+# --------- Misc Options ----------
+<% if @config.search_enable %>
+# Whether or not to enable search functionality. If true, you must supply a valid tsd.search.plugin class name
+tsd.search.enable = <%= @config.search_enable %>
+<% if @config.search_enable = true %>
+# The class name of a search plugin to instantiate. If tsd.search.enable is set to false, this value is ignored. E.g. net.opentsdb.search.ElasticSearch
+tsd.search.plugin = <%= @config.search_plugin %>
+<% end %>
+<% end %>
+
+<% if @config.mode %>
+# Whether or not the TSD will allow writing data points. Must be either rw to allow writing data or ro to block data point writes. Note that meta data such as UIDs can still be written/modified.
+tsd.mode = <%= @config.mode %>
+<% end %>
+
+<% if @config.no_diedie %>
+# Enable or disable the diediedie HTML and ASCII commands to shutdown a TSD.
+tsd.no_diediedie = <%= @config.no_diedie %>
+<% end %>
+
+<% if @config.rpc_plugins %>
+# A comma delimited list of RPC plugins to load when starting a TSD. Must contain the entire class name.
+tsd.rpc.plugins = <%= @config.rpc_plugins %>
+<% end %>
+
+<% if @config.rtpublisher_enable %>
+# Whether or not to enable a real time publishing plugin. If true, you must supply a valid tsd.rtpublisher.plugin class name
+tsd.rtpublisher.enable = <%= @config.rtpublisher_enable %>
+<% if @config.rtpublisher_enable = true %>
+# The class name of a real time publishing plugin to instantiate. If tsd.rtpublisher.enable is set to false, this value is ignored. E.g. net.opentsdb.tsd.RabbitMQPublisher
+tsd.rtpublisher.plugin = <%= @config.rtpublisher_plugin %>
+<% end %>
+<% end %>
+
+<% if @config.stats_canonical %>
+# Whether or not the FQDN should be returned with statistics requests. The default stats are returned with host=<hostname> which is not guaranteed to perform a lookup and return the FQDN. Setting this to true will perform a name lookup and return the FQDN if found, otherwise it may return the IP. The stats output should be fqdn=<hostname>
+tsd.stats.canonical = <%= @config.stats_canonical %>
+<% end %>
