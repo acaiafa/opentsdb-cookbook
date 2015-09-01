@@ -4,7 +4,8 @@
 #
 # Copyright (C) 2015 Bloomberg Finance L.P.
 #
-require 'poise_service/service_mixin'
+require 'poise'
+#require 'poise_service/service_mixin'
 require_relative 'helpers'
 
 module OpentsdbCookbook
@@ -17,6 +18,10 @@ module OpentsdbCookbook
       # @!attribute config_name
       # @return [String]
       attribute(:instance_name, kind_of: String, name_attribute: true)
+
+      # @!attribute cookbook
+      # @return [String]
+      attribute(:cookbook, kind_of: String, default: 'opentsdb')
 
       # @!attribute version
       # @return [String, NilClass]
@@ -128,6 +133,9 @@ module OpentsdbCookbook
 
           # Ensure opentsdb confir dir is created
           directory new_resource.config_dir do
+            owner new_resource.user
+            group new_resource.group
+            cookbook new_resource.cookbook
             action :create
           end
 
@@ -138,6 +146,7 @@ module OpentsdbCookbook
             variables(config: new_resource)
             owner new_resource.user
             group new_resource.group
+            cookbook new_resource.cookbook
             mode 0644
           end
 
@@ -146,6 +155,7 @@ module OpentsdbCookbook
             path "#{new_resource.config_dir}/logback.xml"
             owner new_resource.user
             group new_resource.group
+            cookbook new_resource.cookbook
             mode 0644
           end
         end
