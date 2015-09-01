@@ -1,0 +1,16 @@
+DEPENDENCIES
+  opentsdb
+    path: .
+    metadata: true
+  opentsdb-instance-test
+    path: test/fixtures/cookbooks/opentsdb-instance-test
+
+GRAPH
+  opentsdb (1.0.0)
+    poise (~> 2.2)
+    poise-service (~> 1.0)
+  opentsdb-instance-test (0.0.1)
+    opentsdb (>= 0.0.0)
+  poise (2.3.1)
+  poise-service (1.0.1)
+    poise (~> 2.0)
