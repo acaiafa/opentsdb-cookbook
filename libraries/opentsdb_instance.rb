@@ -13,7 +13,6 @@ module OpentsdbCookbook
     class OpentsdbInstance < Chef::Resource
       include Poise
       provides(:opentsdb_instance)
-      include PoiseService::ServiceMixin
 
       # @!attribute config_name
       # @return [String]
@@ -25,15 +24,19 @@ module OpentsdbCookbook
 
       # @attribute package_url
       # @return [String]
-      attribute(:package_url, kind_of: String, default: "https://github.com/OpenTSDB/opentsdb/releases/download/v#{new_resource.version}/opentsdb-#{new_resource.version}#{distro_ext}")
+      attribute(:package_url, kind_of: String)
 
       # @!attribute user
       # @return [String]
-      attribute(:user, kind_of: String, default: 'opentsdb')
+      attribute(:user, kind_of: String, default: 'root')
 
       # @!attribute group
       # @return [String]
-      attribute(:group, kind_of: String, default: 'opentsdb')
+      attribute(:group, kind_of: String, default: 'root')
+
+      # @!attribute config_dir
+      # @return [String]
+      attribute(:config_dir, kind_of: String, default: '/etc/opentsdb')
 
       # @see: https://github.com/OpenTSDB/opentsdb/blob/master/src/opentsdb.conf
       # @see: http://opentsdb.net/docs/build/html/user_guide/configuration.html
@@ -99,7 +102,6 @@ module OpentsdbCookbook
     class OpentsdbInstance < Chef::Provider
       include Poise
       provides(:opentsdb_instance)
-      include PoiseService::ServiceMixin
       include OpentsdbCookbook::Helpers
 
       # Installs and sets up the tsdb package and configuration.
@@ -107,26 +109,47 @@ module OpentsdbCookbook
       def action_enable
         notifying_block do
           # Install Packages
+          version = new_resource.version
           remote_file "#{new_resource.instance_name} :create /tmp/opentsdb-#{new_resource.version}#{distro_ext}" do
-            source new_resource.package_url
+            path "/tmp/opentsdb-#{new_resource.version}#{distro_ext}"
+            source "https://github.com/OpenTSDB/opentsdb/releases/download/v#{new_resource.version}/opentsdb-#{new_resource.version}#{distro_ext}"
             action :create
           end
 
-          package "opentsdb-#{version}#{distro_ext}" do
-            source "/tmp/opentsdb-#{version}#{distro_ext}"
+          package "opentsdb-#{new_resource.version}#{distro_ext}" do
+            source "/tmp/opentsdb-#{new_resource.version}#{distro_ext}"
+            if source.end_with?('.deb')
+              provider Chef::Provider::Package::Dpkg
+            elsif source.end_with?('.rpm')
+              provider Chef::Provider::Package::Rpm
+            end
             action :upgrade
+          end
+
+          # Ensure opentsdb confir dir is created
+          directory new_resource.config_dir do
+            action :create
+          end
+
+          # Create opentsdb config file
+          template "#{new_resource.instance_name} :create #{new_resource.config_dir}/opentsdb.conf" do
+            source 'etc/opentsdb/opentsdb.conf.erb'
+            path "#{new_resoure.config_dir}/opentsdb.conf"
+            variables(config: new_resource)
+            owner new_resource.user
+            group new_resource.group
+            mode 0644
+          end
+
+          cookbook_file "#{new_resource.instance_name} :create #{new_resource.config_dir}/logback.xml" do
+            source 'etc/opentsdb/logback.xml'
+            path "#{new_resource.config_dir}/logback.xml"
+            owner new_resource.user
+            group new_resource.group
+            mode 0644
           end
         end
         super
-      end
-
-      # Deletes and removes configuration for the tsdb instance.
-      def service_options(service)
-        service.service_name('opentsdb')
-        service.command(start_command)
-        service.directory('/var/run/opentsdb')
-        service.user('opentsdb')
-        service.restart_on_update(true)
       end
     end
   end
