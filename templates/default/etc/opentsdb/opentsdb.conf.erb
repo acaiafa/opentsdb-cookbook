@@ -40,51 +40,53 @@ tsd.network.async_io = <%= @config.network_async_io %>
 <% end %>
 
 # *** OPTIONAL SECTION ***
-
-# The connection queue depth for completed or incomplete connection requests depending on OS. The default may be limited by the 'somaxconn' kernel setting or set by Netty to 3072
 <% if @config.network_backlog %>
+# The connection queue depth for completed or incomplete connection requests depending on OS. The default may be limited by the 'somaxconn' kernel setting or set by Netty to 3072
 tsd.network.backlog = <%= @config.network_backlog %>
 <% end %>
 
 # ----------- HTTP -----------
-# The location of static files for the HTTP GUI interface.
 # *** REQUIRED SECTION***
-tsd.http.staticroot = /usr/share/opentsdb/static/
+<% if @config.http_staticroot %>
+# The location of static files for the HTTP GUI interface.
+tsd.http.staticroot = <%= @config.http_staticroot %>
+<% end %>
 
+<% if @config.http_cachedir %>
 # Where TSD should write it's cache files to
-tsd.http.cachedir = /tmp/opentsdb
+tsd.http.cachedir = <%= @config.http_cachedir %>
+<% end %>
 
 # *** OPTIONAL SECTION ***
-# A comma separated list of domain names to allow access to OpenTSDB when the Origin header is specified by the client. If empty, CORS requests are passed through without validation. The list may not contain the public wildcard * and specific domains at the same time.
 <% if @config.http_request_cors_domains %>
+# A comma separated list of domain names to allow access to OpenTSDB when the Origin header is specified by the client. If empty, CORS requests are passed through without validation. The list may not contain the public wildcard * and specific domains at the same time.
 tsd.http.request.cors_domains = <%= @config.http_request_cors_domains %>
 <% end %>
 
-# A comma separated list of headers sent to clients when executing a CORs request. The literal value of this option will be passed to clients. 
 <% if @config.http_request_cors_headers %>
+# A comma separated list of headers sent to clients when executing a CORs request. The literal value of this option will be passed to clients.
 tsd.http.request.cors_headers = <%= @config.http_request_cors_headers %>
 <% end %>
 
-# Whether or not to enable incoming chunk support for the HTTP RPC
 <% if @config.http_request_enable_chunked %>
+# Whether or not to enable incoming chunk support for the HTTP RPC
 tsd.http.request.enable_chunked = <%= @config.http_request_enable_chunked %>
 <% end %>
 
-# The maximum request body size to support for incoming HTTP requests when chunking is enabled.
 <% if @config.http_request_max_chunk %>
+# The maximum request body size to support for incoming HTTP requests when chunking is enabled.
 tsd.http.request.max_chunk = <%= @config.http_request_max_chunk %>
 <% end %>
 
-# Whether or not to return the stack trace with an API query response when an exception occurs.
 <% if @config.http_show_stack_trace %>
+# Whether or not to return the stack trace with an API query response when an exception occurs.
 tsd.http.show_stack_trace = <%= @config.http_show_stack_trace %>
 <% end %>
 
 # --------- CORE ----------
 # *** REQUIRED SECTION***
 <% if @config.core_auto_create_metrics %>
-# Whether or not to automatically create UIDs for new metric types, default
-# is False
+# Whether or not to automatically create UIDs for new metric types, default is False
 tsd.core.auto_create_metrics = <%= @config.core_auto_create_metrics %>
 <% end %>
 
@@ -129,7 +131,7 @@ tsd.core.meta.enable_tsuid_tracking = <%= @config.core_meta_enable_tsuid_trackin
 tsd.core.preload_uid_cache = <%= @config.core_preload_uid_cache %>
 <% end %>
 
-<% if @config.core_preload_uid_cache = true %>
+<% if @config.core_preload_uid_cache == true %>
 # The number of rows to scan for UID pre-loading.
 tsd.core.preload_uid_cache.max_entries = <%= @config.core_preload_uid_cache_max_entries %>
 <% end %>
@@ -187,10 +189,10 @@ tsd.storage.hbase.uid_table = <%= @config.storage_hbase_uid_table %>
 tsd.storage.hbase.zk_basedir = <%= @config.storage_hbase_zk_basedir %>
 <% end %>
 
-<% if @config.storage_hbase_zk_quroum %>
+<% if @config.storage_hbase_zk_quorum %>
 # A space separated list of Zookeeper hosts to connect to, with or without
 # port specifiers, default is "localhost"
-tsd.storage.hbase.zk_quorum = <%= @config.storage_hbase_zk_quroum %>
+tsd.storage.hbase.zk_quorum = <%= @config.storage_hbase_zk_quorum %>
 <% end %>
 
 <% if @config.storage_fix_duplicates %>
@@ -202,7 +204,7 @@ tsd.storage.fix_duplicates = <%= @config.storage_fix_duplicates %>
 <% if @config.search_enable %>
 # Whether or not to enable search functionality. If true, you must supply a valid tsd.search.plugin class name
 tsd.search.enable = <%= @config.search_enable %>
-<% if @config.search_enable = true %>
+<% if @config.search_enable == true %>
 # The class name of a search plugin to instantiate. If tsd.search.enable is set to false, this value is ignored. E.g. net.opentsdb.search.ElasticSearch
 tsd.search.plugin = <%= @config.search_plugin %>
 <% end %>
@@ -226,7 +228,7 @@ tsd.rpc.plugins = <%= @config.rpc_plugins %>
 <% if @config.rtpublisher_enable %>
 # Whether or not to enable a real time publishing plugin. If true, you must supply a valid tsd.rtpublisher.plugin class name
 tsd.rtpublisher.enable = <%= @config.rtpublisher_enable %>
-<% if @config.rtpublisher_enable = true %>
+<% if @config.rtpublisher_enable == true %>
 # The class name of a real time publishing plugin to instantiate. If tsd.rtpublisher.enable is set to false, this value is ignored. E.g. net.opentsdb.tsd.RabbitMQPublisher
 tsd.rtpublisher.plugin = <%= @config.rtpublisher_plugin %>
 <% end %>

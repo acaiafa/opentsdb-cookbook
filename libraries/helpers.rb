@@ -12,5 +12,14 @@ module OpentsdbCookbook
         '.noarch.rpm'
       end
     end
+
+    def prereq_pack
+      # RHEL world neds gnuplot
+      if node.platform_family == 'rhel'
+        package 'gnuplot' do
+          action :install
+        end
+      end
+    end
   end
 end

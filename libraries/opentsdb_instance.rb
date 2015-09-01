@@ -43,6 +43,10 @@ module OpentsdbCookbook
       # @return [String]
       attribute(:config_dir, kind_of: String, default: '/etc/opentsdb')
 
+      # @!attribute source
+      # @return [String]
+      attribute(:source, kind_of: String, default: 'etc/opentsdb/opentsdb.conf.erb')
+
       # @see: https://github.com/OpenTSDB/opentsdb/blob/master/src/opentsdb.conf
       # @see: http://opentsdb.net/docs/build/html/user_guide/configuration.html
       attribute(:port, kind_of: Integer, default: 4242)
@@ -55,7 +59,6 @@ module OpentsdbCookbook
       attribute(:network_async_io, kind_of: [TrueClass, FalseClass], default: true)
       attribute(:network_backlog, kind_of: String)
 
-
       # HTTP Configuration Parameters
       attribute(:http_staticroot, kind_of: String, default: '/usr/share/opentsdb/static/')
       attribute(:http_cachedir, kind_of: String, default: '/tmp/opentsdb')
@@ -63,7 +66,7 @@ module OpentsdbCookbook
       attribute(:http_request_cors_headers, kind_of: String, default: 'Authorization, Content-Type, Accept, Origin, User-Agent, DNT, Cache-Control, X-Mx-ReqToken, Keep-Alive, X-Requested-With, If-Modified-Since')
       attribute(:http_request_enable_chunked, kind_of: [TrueClass, FalseClass], default: false)
       attribute(:http_request_max_chunk, kind_of: Integer, default: 4096)
-      attribute(:http_show_stack_trace, kind_of: [TrueClass,FalseClass], default: false)
+      attribute(:http_show_stack_trace, kind_of: [TrueClass, FalseClass], default: false)
 
       # Core Configuration Parameters
       attribute(:core_auto_create_metrics, kind_of: [TrueClass, FalseClass], default: false)
@@ -86,8 +89,8 @@ module OpentsdbCookbook
       attribute(:storage_flush_interval, kind_of: String, default: '1000')
       attribute(:storage_hbase_data_table, kind_of: String, default: 'tsdb')
       attribute(:storage_hbase_uid_table, kind_of: String, default: 'tsdb-uid')
-      attribute(:storage_meta_table, kind_of: String, default: 'tsdb-meta')
-      attribute(:storage_tree_table, kind_of: String, default: 'tsdb-tree')
+      attribute(:storage_hbase_meta_table, kind_of: String, default: 'tsdb-meta')
+      attribute(:storage_hbase_tree_table, kind_of: String, default: 'tsdb-tree')
       attribute(:storage_hbase_zk_basedir, kind_of: String, default: '/hbase')
       attribute(:storage_hbase_zk_quorum, kind_of: String, default: 'localhost')
 
@@ -99,6 +102,7 @@ module OpentsdbCookbook
       attribute(:rtpublisher_enable, kind_of: [TrueClass, FalseClass], default: false)
       attribute(:rtpublisher_plugin, kind_of: String)
       attribute(:stats_canonical, kind_of: [TrueClass, FalseClass], default: false)
+      attribute(:rpc_plugins, kind_of: String)
     end
   end
 
@@ -115,6 +119,7 @@ module OpentsdbCookbook
       def action_enable
         notifying_block do
           # Install Packages
+          prereq_pack
           version = new_resource.version
           remote_file "#{new_resource.instance_name} :create /tmp/opentsdb-#{new_resource.version}#{distro_ext}" do
             path "/tmp/opentsdb-#{new_resource.version}#{distro_ext}"
@@ -141,7 +146,7 @@ module OpentsdbCookbook
 
           # Create opentsdb config file
           template "#{new_resource.instance_name} :create #{new_resource.config_dir}/opentsdb.conf" do
-            source 'etc/opentsdb/opentsdb.conf.erb'
+            source new_resource.source
             path "#{new_resource.config_dir}/opentsdb.conf"
             variables(config: new_resource)
             owner new_resource.user
@@ -164,7 +169,9 @@ module OpentsdbCookbook
 
       def service_options(service)
         service.service_name('opentsdb')
-        service.command(start_command)
+        service.command('/usr/share/opentsdb/bin/tsdb')
+        service.provider :sysvinit
+        service.options :sysvinit, template: "opentsdb:etc/init.d/opentsdb_#{node.platform_family}"
       end
     end
   end
