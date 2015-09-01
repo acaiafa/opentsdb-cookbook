@@ -95,10 +95,10 @@ module OpentsdbCookbook
       attribute(:storage_hbase_zk_quorum, kind_of: String, default: 'localhost')
 
       # Search/RPC/RTPublisher/Stats/Misc Configuration Paramters
-      attribute(:search_enable, kind_of: [TrueClass,FalseClass], default: false)
+      attribute(:search_enable, kind_of: [TrueClass, FalseClass], default: false)
       attribute(:search_plugin, kind_of: String)
       attribute(:mode, equal_to: %w{rw ro}, default: 'rw')
-      attribute(:no_diedie, kind_of: [TrueClass,FalseClass], default: false)
+      attribute(:no_diedie, kind_of: [TrueClass, FalseClass], default: false)
       attribute(:rtpublisher_enable, kind_of: [TrueClass, FalseClass], default: false)
       attribute(:rtpublisher_plugin, kind_of: String)
       attribute(:stats_canonical, kind_of: [TrueClass, FalseClass], default: false)
@@ -120,8 +120,7 @@ module OpentsdbCookbook
         notifying_block do
           # Install Packages
           prereq_pack
-          version = new_resource.version
-          remote_file "#{new_resource.instance_name} :create /tmp/opentsdb-#{new_resource.version}#{distro_ext}" do
+          remote_file "#{new_resource.instance_name} :create opentsdb-#{new_resource.version}#{distro_ext}" do
             path "/tmp/opentsdb-#{new_resource.version}#{distro_ext}"
             source "https://github.com/OpenTSDB/opentsdb/releases/download/v#{new_resource.version}/opentsdb-#{new_resource.version}#{distro_ext}"
             action :create
