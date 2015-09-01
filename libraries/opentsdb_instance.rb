@@ -4,8 +4,7 @@
 #
 # Copyright (C) 2015 Bloomberg Finance L.P.
 #
-require 'poise'
-#require 'poise_service/service_mixin'
+require 'poise_service/service_mixin'
 require_relative 'helpers'
 
 module OpentsdbCookbook
@@ -14,6 +13,7 @@ module OpentsdbCookbook
     class OpentsdbInstance < Chef::Resource
       include Poise
       provides(:opentsdb_instance)
+      include PoiseService::ServiceMixin
 
       # @!attribute config_name
       # @return [String]
@@ -107,6 +107,7 @@ module OpentsdbCookbook
     class OpentsdbInstance < Chef::Provider
       include Poise
       provides(:opentsdb_instance)
+      include PoiseService::ServiceMixin
       include OpentsdbCookbook::Helpers
 
       # Installs and sets up the tsdb package and configuration.
@@ -135,14 +136,13 @@ module OpentsdbCookbook
           directory new_resource.config_dir do
             owner new_resource.user
             group new_resource.group
-            cookbook new_resource.cookbook
             action :create
           end
 
           # Create opentsdb config file
           template "#{new_resource.instance_name} :create #{new_resource.config_dir}/opentsdb.conf" do
             source 'etc/opentsdb/opentsdb.conf.erb'
-            path "#{new_resoure.config_dir}/opentsdb.conf"
+            path "#{new_resource.config_dir}/opentsdb.conf"
             variables(config: new_resource)
             owner new_resource.user
             group new_resource.group
@@ -160,6 +160,11 @@ module OpentsdbCookbook
           end
         end
         super
+      end
+
+      def service_options(service)
+        service.service_name('opentsdb')
+        service.command(start_command)
       end
     end
   end
