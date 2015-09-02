@@ -1,5 +1,6 @@
 # OpenTSDB Cookbook
 [![License](https://img.shields.io/badge/license-Apache_2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Build Status](https://travis-ci.org/acaiafa/opentsdb-cookbook.svg)](https://travis-ci.org/acaiafa/opentsdb-cookbook.svg)
 
 [Application cookbook][0] which installs and configures [OpenTSDB][1]. You will need to bring your own java cookbook to the party. I don't think its heplful for me to provide some random java cookbook from the internet. It will grab the version of the package from OpenTSDB github where they package all of the code into rpm or deb's. For RHEL it requires gnuplot so that gets installed. However please remember you must bring your own java cookbook or install method. Otherwise it will fail. Here is a quick example of installing java 8 if you need it [Java 8 Install][7].
 
