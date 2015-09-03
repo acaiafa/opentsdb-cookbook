@@ -1,7 +1,7 @@
 name 'opentsdb'
 maintainer 'Anthony Caiafa'
 maintainer_email 'acaiafa1@bloomberg.net'
-description 'Installs/Configures opentsdb'
+description 'Application cookbook which installs and configures OpenTSDB.'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version '1.0.0'
 
