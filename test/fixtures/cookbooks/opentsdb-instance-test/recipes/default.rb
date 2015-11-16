@@ -20,4 +20,6 @@ package pkg do
   action :install
 end
 
-opentsdb_instance 'test'
+opentsdb_instance 'test' do
+  logback_level 'WARN'
+end
