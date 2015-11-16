@@ -45,7 +45,7 @@ module OpentsdbCookbook
 
       # @!attribute source
       # @return [String]
-      attribute(:source, kind_of: String, default: 'etc/opentsdb/opentsdb.conf.erb')
+      attribute(:source_dir, kind_of: String, default: 'etc/opentsdb')
 
       # @see: https://github.com/OpenTSDB/opentsdb/blob/master/src/opentsdb.conf
       # @see: http://opentsdb.net/docs/build/html/user_guide/configuration.html
@@ -103,6 +103,17 @@ module OpentsdbCookbook
       attribute(:rtpublisher_plugin, kind_of: String)
       attribute(:stats_canonical, kind_of: [TrueClass, FalseClass], default: false)
       attribute(:rpc_plugins, kind_of: String)
+
+      # Logback Parameters
+      attribute(:logback_stdout_pattern, kind_of: String, default: '%d{ISO8601} %-5level [%thread] %logger{0}: %msg%n')
+      attribute(:logback_cyclic_maxsize, kind_of: Integer, default: 1024)
+      attribute(:logback_file, kind_of: String, default: '/var/log/opentsdb/opentsdb.log')
+      attribute(:logback_file_append, kind_of: String, default: 'true')
+      attribute(:logback_file_minindex, kind_of: Integer, default: 1)
+      attribute(:logback_file_maxindex, kind_of: Integer, default: 3)
+      attribute(:logback_file_maxfilesize, kind_of: String, default: '128MB')
+      attribute(:logback_file_pattern, kind_of: String, default: '%d{HH:mm:ss.SSS} %-5level [%logger{0}.%M] - %msg%n')
+      attribute(:logback_level, kind_of: String, default: 'INFO')
     end
   end
 
@@ -144,23 +155,16 @@ module OpentsdbCookbook
           end
 
           # Create opentsdb config file
-          template "#{new_resource.instance_name} :create #{new_resource.config_dir}/opentsdb.conf" do
-            source new_resource.source
-            path "#{new_resource.config_dir}/opentsdb.conf"
-            variables(config: new_resource)
-            owner new_resource.user
-            group new_resource.group
-            cookbook new_resource.cookbook
-            mode 0644
-          end
-
-          cookbook_file "#{new_resource.instance_name} :create #{new_resource.config_dir}/logback.xml" do
-            source 'etc/opentsdb/logback.xml'
-            path "#{new_resource.config_dir}/logback.xml"
-            owner new_resource.user
-            group new_resource.group
-            cookbook new_resource.cookbook
-            mode 0644
+          %w(opentsdb.conf logback.xml).each do |t|
+            template "#{new_resource.instance_name} :create #{new_resource.config_dir}/#{t}" do
+              source "#{new_resource.source_dir}/#{t}.erb"
+              path "#{new_resource.config_dir}/#{t}"
+              variables(config: new_resource)
+              owner new_resource.user
+              group new_resource.group
+              cookbook new_resource.cookbook
+              mode 0644
+            end
           end
         end
         super
