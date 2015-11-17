@@ -23,12 +23,12 @@ The current attributes are all set with the TSDB defaults that are listed here [
 #### opentsdb_instance
 A default OpenTSDB instance as is easy as below
 
-```ruby
+```
 opentsdb_instance "test"
 ```
 
 You Can tune and tweak as you please
-```ruby
+```
 opentsdb_instance "test" do
   bind '127.0.0.1'
   port 5012
