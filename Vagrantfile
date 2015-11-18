@@ -11,7 +11,7 @@ Vagrant.configure('2') do |config|
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
-  config.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-14.04_provisionerless.box"
+  config.vm.box_url = 'https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-14.04_provisionerless.box'
 
   config.vm.define :bootstrap, primary: true do |guest|
     guest.vm.network :private_network, ip: '172.16.38.10'
