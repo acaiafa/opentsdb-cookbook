@@ -163,6 +163,7 @@ module OpentsdbCookbook
               owner new_resource.user
               group new_resource.group
               cookbook new_resource.cookbook
+              notifies :reload, new_resource, :immediately
               mode 0644
             end
           end
