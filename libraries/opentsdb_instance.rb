@@ -163,7 +163,7 @@ module OpentsdbCookbook
               owner new_resource.user
               group new_resource.group
               cookbook new_resource.cookbook
-              notifies :reload, new_resource, :immediately
+              notifies :restart, new_resource, :immediately
               mode 0644
             end
           end
@@ -174,7 +174,6 @@ module OpentsdbCookbook
       def service_options(service)
         service.service_name('opentsdb')
         service.command('/usr/share/opentsdb/bin/tsdb')
-        service.restart_on_update(true)
         service.provider :sysvinit
         service.options :sysvinit, template: "opentsdb:etc/init.d/opentsdb_#{node.platform_family}"
       end
