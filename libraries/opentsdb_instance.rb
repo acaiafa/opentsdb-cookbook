@@ -131,7 +131,7 @@ module OpentsdbCookbook
         notifying_block do
           # Install Packages
           prereq_pack
-          remote_file "#{new_resource.instance_name} :create opentsdb-#{new_resource.version}#{distro_ext}" do
+          remote_file "#{new_resource.instance} :create opentsdb-#{new_resource.version}#{distro_ext}" do
             path "/tmp/opentsdb-#{new_resource.version}#{distro_ext}"
             source "https://github.com/OpenTSDB/opentsdb/releases/download/v#{new_resource.version}/opentsdb-#{new_resource.version}#{distro_ext}"
             action :create
@@ -156,7 +156,7 @@ module OpentsdbCookbook
 
           # Create opentsdb config file
           %w(opentsdb.conf logback.xml).each do |t|
-            template "#{new_resource.instance_name} :create #{new_resource.config_dir}/#{t}" do
+            template "#{new_resource.instance} :create #{new_resource.config_dir}/#{t}" do
               source "#{new_resource.source_dir}/#{t}.erb"
               path "#{new_resource.config_dir}/#{t}"
               variables(config: new_resource)
