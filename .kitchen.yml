@@ -1,0 +1,31 @@
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: ubuntu-14.04
+    run_list:
+      - recipe[apt::default]
+  - name: ubuntu-12.04
+    run_list:
+      - recipe[apt::default]
+  - name: ubuntu-10.04
+    run_list:
+      - recipe[apt::default]
+  - name: centos-7.1
+    run_list:
+      - recipe[yum-epel::default]
+  - name: centos-6.7
+    run_list:
+      - recipe[yum-epel::default]
+  - name: centos-5.11
+    run_list:
+      - recipe[yum-epel::default]
+
+suites:
+  - name: default
+    run_list:
+      - recipe[opentsdb-instance-test::default]
