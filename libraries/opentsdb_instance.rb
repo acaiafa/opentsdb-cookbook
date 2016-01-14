@@ -116,7 +116,7 @@ module OpentsdbCookbook
       attribute(:logback_level, kind_of: String, default: 'INFO')
 
       # JVM Arg Option
-      attribute(:jvm_args, kind_of: String) 
+      attribute(:jvm_args, kind_of: [NilClass, String], default: nil)
     end
   end
 
@@ -178,6 +178,7 @@ module OpentsdbCookbook
         service.service_name('opentsdb')
         service.command('/usr/share/opentsdb/bin/tsdb')
         service.provider :sysvinit
+        service.options opentsdb_resource: new_resource
         service.options :sysvinit, template: "opentsdb:etc/init.d/opentsdb_#{node.platform_family}.erb"
       end
     end
