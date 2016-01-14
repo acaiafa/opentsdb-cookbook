@@ -178,7 +178,7 @@ module OpentsdbCookbook
         service.service_name('opentsdb')
         service.command('/usr/share/opentsdb/bin/tsdb')
         service.provider :sysvinit
-        service.options :sysvinit, template: "opentsdb:etc/init.d/opentsdb_#{node.platform_family}"
+        service.options :sysvinit, template: "opentsdb:etc/init.d/opentsdb_#{node.platform_family}.erb"
       end
     end
   end
