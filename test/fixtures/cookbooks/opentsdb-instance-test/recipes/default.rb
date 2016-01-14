@@ -19,5 +19,4 @@ end
 
 opentsdb_instance 'test' do
   logback_level 'WARN'
-  jvm_args 'Sup dude'
 end
