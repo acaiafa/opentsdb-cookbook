@@ -77,7 +77,12 @@ start() {
   : ${JMXPORT:=10201}
   : ${JMXARGS:=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=$JMXPORT}
   : ${JVMXMX:=-Xmx6000m}
+  <% if @options[:opentsdb_resource].jvm_args %>
+  <%= ": ${JVMADD:=" + @options[:opentsdb_resource].jvm_args + "}" %>
+  : ${JVMARGS:=-DLOG_FILE_PREFIX=${LOG_FILE} ${JMXARGS} -enableassertions -enablesystemassertions $JVMXMX -XX:OnOutOfMemoryError=/usr/share/opentsdb/tools/opentsdb_restart.py ${JVMADD} }
+  <% else %>
   : ${JVMARGS:=-DLOG_FILE_PREFIX=${LOG_FILE} ${JMXARGS} -enableassertions -enablesystemassertions $JVMXMX -XX:OnOutOfMemoryError=/usr/share/opentsdb/tools/opentsdb_restart.py}
+  <% end %>
   export JVMARGS
 
   if [ "`id -u -n`" == root ] ; then
