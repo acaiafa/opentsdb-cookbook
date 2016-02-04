@@ -114,6 +114,7 @@ module OpentsdbCookbook
       attribute(:logback_file_maxfilesize, kind_of: String, default: '128MB')
       attribute(:logback_file_pattern, kind_of: String, default: '%d{HH:mm:ss.SSS} %-5level [%logger{0}.%M] - %msg%n')
       attribute(:logback_level, kind_of: String, default: 'INFO')
+      attribute(:logback_stdout_flag, kind_of: [TrueClass, FalseClass], default: false)
     end
   end
 
