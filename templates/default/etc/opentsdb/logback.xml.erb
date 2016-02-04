@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
   <!--<jmxConfigurator/>-->
-  <%= if @config.logback_stdout_flag  -%>
+  <%= if @config.logback_stdout_flag == true -%>
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>
@@ -40,7 +40,7 @@
   <logger name="org.hbase.async" level="INFO"/>
   <logger name="com.stumbleupon.async" level="INFO"/>
   <root level="<%= @config.logback_level %>">
-  <%= if @config.logback_stdout_flag -%>
+  <%= if @config.logback_stdout_flag  == true -%>
     <appender-ref ref="STDOUT"/>
 <% end -%>
     <appender-ref ref="CYCLIC"/>
