@@ -10,6 +10,7 @@ end
 
 group :unit do
   gem 'chefspec'
+  gem 'berkshelf'
 end
 
 group :integration do
