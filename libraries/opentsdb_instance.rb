@@ -69,7 +69,6 @@ module OpentsdbCookbook
       attribute(:http_show_stack_trace, kind_of: [TrueClass, FalseClass], default: false)
       attribute(:http_rpc_plugins, kind_of: String)
 
-
       # Core Configuration Parameters
       attribute(:core_auto_create_metrics, kind_of: [TrueClass, FalseClass], default: false)
       attribute(:core_plugin_path, kind_of: String, default: '/usr/share/opentsdb/plugins')
