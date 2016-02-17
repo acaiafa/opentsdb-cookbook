@@ -67,6 +67,8 @@ module OpentsdbCookbook
       attribute(:http_request_enable_chunked, kind_of: [TrueClass, FalseClass], default: false)
       attribute(:http_request_max_chunk, kind_of: Integer, default: 4096)
       attribute(:http_show_stack_trace, kind_of: [TrueClass, FalseClass], default: false)
+      attribute(:http_rpc_plugins, kind_of: String)
+
 
       # Core Configuration Parameters
       attribute(:core_auto_create_metrics, kind_of: [TrueClass, FalseClass], default: false)
@@ -82,6 +84,8 @@ module OpentsdbCookbook
       attribute(:core_timezone, kind_of: String)
       attribute(:core_tree_enable_processing, kind_of: [TrueClass, FalseClass], default: false)
       attribute(:core_uid_random_metrics, kind_of: [TrueClass, FalseClass], default: false)
+      attribute(:core_storage_exception_handler_enable, kind_of: [TrueClass, FalseClass], default: false)
+      attribute(:core_storage_exception_handler_plugin, kind_of: String)
 
       # Storage Configuration Parameters
       attribute(:storage_enable_compaction, kind_of: [TrueClass, FalseClass], default: true)
@@ -93,6 +97,25 @@ module OpentsdbCookbook
       attribute(:storage_hbase_tree_table, kind_of: String, default: 'tsdb-tree')
       attribute(:storage_hbase_zk_basedir, kind_of: String, default: '/hbase')
       attribute(:storage_hbase_zk_quorum, kind_of: String, default: 'localhost')
+      attribute(:storage_compaction_flush_interval, kind_of: String, default: '10')
+      attribute(:storage_compaction_flush_speed, kind_of: String, default: '2')
+      attribute(:storage_compaction_max_concurrent_flushes, kind_of: String, default: '10000')
+      attribute(:storage_compaction_min_flush_threshold, kind_of: String, default: '100')
+      attribute(:storage_enable_appends, kind_of: [TrueClass, FalseClass], default: false)
+      attribute(:storage_hbase_prefetch_meta, kind_of: [TrueClass, FalseClass], default: false)
+      attribute(:storage_repair_appends, kind_of: [TrueClass, FalseClass], default: false)
+      attribute(:storage_max_tags, kind_of: String, default: '8')
+      attribute(:storage_salt_buckets, kind_of: String, default: '20')
+      attribute(:storage_salt_width, kind_of: String, default: '0')
+      attribute(:storage_uid_width_metric, kind_of: String, default: '3')
+      attribute(:storage_uid_width_tagk, kind_of: String, default: '3')
+      attribute(:storage_uid_width_tagv, kind_of: String, default: '3')
+
+      # Query configuration Parameters
+      attribute(:query_allow_simultaneous_duplicates, kind_of: [TrueClass, FalseClass], default: false)
+      attribute(:query_filter_expansion_limit, kind_of: String, default: '4096')
+      attribute(:query_skip_unresolved_tagvs, kind_of: [TrueClass, FalseClass], default: false)
+      attribute(:query_timeout, kind_of: String, default: '0')
 
       # Search/RPC/RTPublisher/Stats/Misc Configuration Paramters
       attribute(:search_enable, kind_of: [TrueClass, FalseClass], default: false)
@@ -103,6 +126,39 @@ module OpentsdbCookbook
       attribute(:rtpublisher_plugin, kind_of: String)
       attribute(:stats_canonical, kind_of: [TrueClass, FalseClass], default: false)
       attribute(:rpc_plugins, kind_of: String)
+
+      # HBASE Options
+      attribute(:hbase_client_retries_number, kind_of: String, default: '10')
+      attribute(:hbase_increments_buffer_size, kind_of: String, default: '65,535')
+      attribute(:hbase_ipc_client_connection_idle_timeout, kind_of: String, default: '300')
+      attribute(:hbase_ipc_client_socket_receiveBufferSize, kind_of: String)
+      attribute(:hbase_ipc_client_socket_sendBufferSize, kind_of: String)
+      attribute(:hbase_ipc_client_socket_timeout_connect, kind_of: String, default: '5000')
+      attribute(:hbase_ipc_client_tcpkeepalive, kind_of: [TrueClass, FalseClass], default: true)
+      attribute(:hbase_ipc_client_tcpnodelay, kind_of: [TrueClass, FalseClass], default: true)
+      attribute(:hbase_kerberos_regionserver_principal, kind_of: String)
+      attribute(:hbase_nsre_high_watermark, kind_of: String, default: '10000')
+      attribute(:hbase_nsre_low_watermark, kind_of: String, default: '100')
+      attribute(:hbase_region_client_check_channel_write_status, kind_of: [TrueClass, FalseClass], default: false)
+      attribute(:hbase_region_client_inflight_limit, kind_of: String, default: '0')
+      attribute(:hbase_region_client_pending_limit, kind_of: String, default: '0')
+      attribute(:hbase_regionserver_kerberos_password, kind_of: String)
+      attribute(:hbase_rpcs_batch_size, kind_of: String, '1024')
+      attribute(:hbase_rpcs_buffered_flush_interval, kind_of: String, '1000')
+      attribute(:hbase_rpc_protection, kind_of: String)
+      attribute(:hbase_rpc_timeout, kind_of: String, default: '0')
+      attribute(:hbase_sasl_clientconfig, kind_of: String, default: 'Client')
+      attribute(:hbase_security_auth_94, kind_of: [TrueClass, FalseClass], default: false)
+      attribute(:hbase_security_auth_enable, kind_of: [TrueClass, FalseClass], default: false)
+      attribute(:hbase_security_authentication, kind_of: String)
+      attribute(:hbase_security_simple_username, kind_of: String)
+      attribute(:hbase_timer_tick, kind_of: String, '20')
+      attribute(:hbase_timer_ticks_per_wheel, kind_of: String, '512')
+      attribute(:hbase_workers_size, kind_of: String)
+      attribute(:hbase_zookeeper_getroot_retry_delay, kind_of: String, '1000')
+      attribute(:hbase_zookeeper_quorum, kind_of: String, 'localhost')
+      attribute(:hbase_zookeeper_session_timeout, kind_of: String, '5000')
+      attribute(:hbase_zookeeper_znode_parent, kind_of: String, '/hbase')
 
       # Logback Parameters
       attribute(:logback_stdout_pattern, kind_of: String, default: '%d{ISO8601} %-5level [%thread] %logger{0}: %msg%n')
