@@ -64,6 +64,11 @@ tsd.http.request.max_chunk = <%= @config.http_request_max_chunk.to_s %>
 # Whether or not to return the stack trace with an API query response when an exception occurs.
 tsd.http.show_stack_trace = <%= @config.http_show_stack_trace %>
 
+<% if @config.http_rpc_plugins %>
+# A comma delimited list of RPC plugins to load when starting a TSD. Must contain the entire class name.
+tsd.http.rcp.plugins = <%= @config.http_rpc_plugins %>
+<% end %>
+
 # --------- CORE ----------
 # *** REQUIRED SECTION***
 # Whether or not to automatically create UIDs for new metric types, default is False
@@ -110,6 +115,14 @@ tsd.core.tree.enable_processing = <%= @config.core_tree_enable_processing %>
 # Whether or not to randomly assign UIDs to new metrics as they are created
 tsd.core.uid.random_metrics = <%= @config.core_uid_random_metrics %>
 
+# Whether or not to enable the configured storage exception handler plugin.
+tsd.core.storage_exception_handler.enable = <%= @config.core_storage_exception_handler_enable %>
+
+<% if @config.core_storage_exception_handler_plugin %>
+# The full class name of the storage exception handler plugin you wish to use.
+tsd.core.storage_exception_handler.plugin = <%= @core_storage_exception_handler_plugin %>
+<% end %>
+
 # --------- STORAGE ----------
 # *** OPTIONAL SECTION ***
 # Whether or not to enable data compaction in HBase, default is True
@@ -141,6 +154,59 @@ tsd.storage.hbase.zk_quorum = <%= @config.storage_hbase_zk_quorum %>
 # Whether or not to accept the last written value when parsing data points with duplicate timestamps. When enabled in conjunction with compactions, a compacted column will be written with the latest data points.
 tsd.storage.fix_duplicates = <%= @config.storage_fix_duplicates %>
 
+# How long, in seconds, to wait in between compaction queue flush calls
+tsd.storage.compaction.flush_interval = <%= @config.storage_compaction_flush_interval %>
+
+# A multiplier used to determine how quickly to attempt flushing the compaction queue. E.g. a value of 2 means it will try to flush the entire queue within 30 minutes. A value of 1 would take an hour
+tsd.storage.compaction.flush_speed = <%= @config.storage_compaction_flush_speed %>
+
+# The maximum number of compaction calls inflight to HBase at any given time
+tsd.storage.compaction.max_concurrent_flushes = <%= @config.storage_compaction_max_concurrent_flushes %>
+
+# Size of the compaction queue that must be exceeded before flushing is triggered
+tsd.storage.compaction.min_flush_threshold = <%= @config.storage_compaction_min_flush_threshold %>
+
+# Whether or not to append data to columns when writing data points instead of creating new columns for each value. Avoids the need for compactions after each hour but can use more resources on HBase.
+tsd.storage.enable_appends = <%= @config.storage_enable_appends %>
+
+# Whether or not to prefetch the regions for the TSDB tables before starting the network interface. This can improve performance.
+tsd.storage.hbase.prefetch_meta = <%= @config.storage_hbase_prefetch_meta %>
+
+# Whether or not to re-write appended data point columns at query time when the columns contain duplicate or out of order data.
+tsd.storage.repair_appends = <%= @config.storage_repair_appends %>
+
+# The maximum number of tags allowed per data point. NOTE Please be aware of the performance tradeoffs of overusing tags Writing Data(http://opentsdb.net/docs/build/html/user_guide/writing.html)
+tsd.storage.max_tags = <%= @config.storage_max_tags %>
+
+# The number of salt buckets used to distribute load across regions. NOTE Changing this value after writing data may cause TSUID based queries to fail.
+tsd.storage.salt.buckets = <%= @config.storage_salt_buckets %>
+
+# The width, in bytes, of the salt prefix used to indicate which bucket a time series belongs in. A value of 0 means salting is disabled. WARNING Do not change after writing data to HBase or you will corrupt your tables and not be able to query any more.
+tsd.storage.salt.width = <%= @config.storage_salt_width %>
+
+# The width, in bytes, of metric UIDs. WARNING Do not change after writing data to HBase or you will corrupt your tables and not be able to query any more.
+tsd.storage.uid.width.metric = <%= @config.storage_uid_width_metric %>
+
+# The width, in bytes, of tag name UIDs. WARNING Do not change after writing data to HBase or you will corrupt your tables and not be able to query any more.
+tsd.storage.uid.width.tagk = <%= @config.storage_uid_width_tagk %>
+
+# The width, in bytes, of tag value UIDs. WARNING Do not change after writing data to HBase or you will corrupt your tables and not be able to query any more.
+tsd.storage.uid.width.tagv = <%= @config.storage_uid_width_tagv %>
+
+
+# --------- Query Options ---------
+# Whether or not to allow simultaneous duplicate queries from the same host. If disabled, a second query that comes in matching one already running will receive an exception.
+tsd.query.allow_simultaneous_duplicates = <%= @config.query_allow_simultaneous_duplicates %>
+
+# The maximum number of tag values to include in the regular expression sent to storage during scanning for data. A larger value means more computation on the HBase region servers.
+tsd.query.filter.expansion_limit = <%= @config.query_filter_expansion_limit %>
+
+# Whether or not to continue querying when the query includes a tag value that hasn't been assigned a UID yet and may not exist.
+tsd.query.skip_unresolved_tagvs = <%= @config.query_skip_unresolved_tagvs %>
+
+# How long, in milliseconds, before canceling a running query. A value of 0 means queries will not timeout.
+tsd.query.timeout = <%= @config.query_timeout %>
+
 # --------- Misc Options ----------
 # Whether or not to enable search functionality. If true, you must supply a valid tsd.search.plugin class name
 tsd.search.enable = <%= @config.search_enable %>
@@ -169,3 +235,84 @@ tsd.rtpublisher.plugin = <%= @config.rtpublisher_plugin %>
 
 # Whether or not the FQDN should be returned with statistics requests. The default stats are returned with host=<hostname> which is not guaranteed to perform a lookup and return the FQDN. Setting this to true will perform a name lookup and return the FQDN if found, otherwise it may return the IP. The stats output should be fqdn=<hostname>
 tsd.stats.canonical = <%= @config.stats_canonical %>
+
+# --------- HBASE Options----------
+# The number of times an RPC will be retried when a recoverable exception occurs, e.g. a region moving or splitting. Non-recoverable exceptions will fail the RPC immediately.
+hbase.client.retries.number = <%= @config.hbase_client_retries_number %>
+# How many unique counters to maintain in memory when using BufferedIncrement RPCs. Once this limit is reached, new buffered increments are immediately sent to the region server.
+hbase.increments.buffer_size = <%= @config.hbase_increments_buffer_size %>
+# How long, in seconds, to wait before closing an idle connection to a region server. Idle means no writes or reads to the socket.
+hbase.ipc.client.connection.idle_timeout = <%= @config.hbase_ipc_client_connection_idle_timeout %>
+<% if @config.hbase_ipc_client_socket_receiveBufferSize %>
+# The size of the region server socket receive buffer in bytes.
+hbase.ipc.client.socket.receiveBufferSize = <%= @config.hbase_ipc_client_socket_receiveBufferSize %>
+<% end %>
+<% if @config.hbase_ipc_client_socket_sendBufferSize %>
+# The size of the region server socket send buffer in bytes.
+hbase.ipc.client.socket.sendBufferSize = <%= @config.hbase_ipc_client_socket_sendBufferSize %>
+<% end %>
+# How long, in milliseconds, to wait for a socket connection attempt to a region server.
+hbase.ipc.client.socket.timeout.connect = <%= @config.hbase_ipc_client_socket_timeout_connect %>
+# Whether or not to enable keep-alives on the TCP socket to the region servers.
+hbase.ipc.client.tcpkeepalive = <%= @config.hbase_ipc_client_tcpkeepalive %>
+# Whether or not to bypass TCP spooling and send packets immediately to the region servers.
+hbase.ipc.client.tcpnodelay = <%= @config.hbase_ipc_client_tcpnodelay %>
+<% if @config.hbase_kerberos_regionserver_principal %>
+# A name or template to use as the principal for kerberos authentication. Instances of the string _HOST will be replaced with the host name of the client.
+hbase.kerberos.regionserver.principal = <%= @config.hbase_kerberos_regionserver_principal %>
+<% end %>
+# The maximum number of RPCs allowed in the NSRE queue for a region before new RPCs are failed with please throttle exceptions.
+hbase.nsre.high_watermark = <%= @config.hbase_nsre_high_watermark %>
+# The number of RPCs, per region server, that must be present in the NSRE queue before warnings start appearing in the log file.
+hbase.nsre.low_watermark = <%= @config.hbase_nsre_low_watermark %>
+# Whether or not to check the write status of the region server connection's socket before attempting to send the RPC. If a region server is slow, the client may buffer a large amount of data in memory while waiting for the server to consume data. This can lead to out of memory issues or a very large heap. When this is enabled and the buffer is full, RPCs will fail with please throttle exceptions.
+hbase.region_client.check_channel_write_status = <%= @config.hbase_region_client_check_channel_write_status %>
+# The maximum number of RPCs sent to the connected region server and waiting a response. A large number of inflight RPCs can lead to out of memory issues. A value of 0 will disable this limit. If the limit is reached, RPCs will fail with please throttle exceptions.
+hbase.region_client.inflight_limit = <%= @config.hbase_region_client_inflight_limit %>
+# The maximum number of RPCs queued while waiting for a region server connection to complete. If a region server is slow to respond to a connection request, or authentication takes a long time, then a large queue of RPCs may build up in memory. A value of 0 will disable this limit. If the limit is reached, RPCs will fail with please throttle exceptions.
+hbase.region_client.pending_limit = <%= @config.hbase_region_client_pending_limit %>
+<% if @config.hbase_regionserver_kerberos_password %>
+# NOT RECOMMENDED OR TESTED: A password for the region server when authenticating via kerberos.
+hbase.regionserver.kerberos.password = <%= @config.hbase_regionserver_kerberos_password %>
+<% end %>
+# The number of individual RPCs that can be buffered before being sent to the region server. If this limit is reached before hbase.rpcs.buffered_flush_interval then the batch is sent out immediately and a new batch is started.
+hbase.rpcs.batch.size = <%= @config.hbase_rpcs_batch_size %>
+# How often, in milliseconds, to flush buffered RPCs (Puts, Appends, etc) to the region servers.
+hbase.rpcs.buffered_flush_interval = <%= @config.hbase_rpcs_buffered_flush_interval %>
+<% if @config.hbase_rpc_protection %>
+# Whether or not to encrypt RPCs while they are traversing the network. May be authentication (no encryption), integrity, (no encryption) or privacy (encrypted). Requires authentication to be enabled.
+hbase.rpc.protection = <%= @config.hbase_rpc_protection %>
+<% end %>
+# How long, in milliseconds, to wait for a response to an RPC from a region server before failing the RPC with a RpcTimedOutException. This value can be overridden on a per-RPC basis. A value of 0 will not allow RPCs to timeout.
+hbase.rpc.timeout = <%= @config.hbase_rpc_timeout %>
+# The section in a JAAS configuration file to use when authenticating against a region server.
+hbase.sasl.clientconfig = <%= @config.hbase_sasl_clientconfig %>
+# Whether or not the client is connection to an HBase 0.94 cluster with authentication.
+hbase.security.auth.94 = <%= @config.hbase_security_auth_94 %>
+# Whether or not to enable authentication when connecting to HBase. Please see ___TODO___ for more information.
+hbase.security.auth.enable = <%= @config.hbase_security_auth_enable %>
+<% if @config.hbase_security_authentication %>
+# The type of authentication required for the HBase cluster. May be kerberos or simple.
+hbase.security.authentication = <%= @config.config.hbase_security_authentication %>
+<% end %>
+<% if @config.hbase_security_simple_username %>
+# The user name for authenticating against an HBase cluster with simple authentication. (Not recommended)
+hbase.security.simple.username = <%= @config.hbase_security_simple_username %>
+<% end %>
+# How often, in milliseconds, to execute the flush and timeout timers, looking for new tasks. This value should not need modification.
+hbase.timer.tick = <%= @config.hbase_timer_tick %>
+# How many hash buckets are used for scheduling tasks in the flush and timeout timers. This value should not need modification.
+hbase.timer.ticks_per_wheel = <%= @config.hbase_timer_ticks_per_wheel %>
+<% if @config.hbase_workers_size %>
+# The number of worker threads to instantiate for region client connections.
+hbase.workers.size = <%= @config.hbase_workers_size %>
+<% end %>
+# How long, in milliseconds, to wait between attempts fetching the root region from Zookeeper if a call fails.
+hbase.zookeeper.getroot.retry_delay = <%= @config.hbase_zookeeper_getroot_retry_delay %>
+# A comma-separated list of ZooKeeper hosts to connect to, with or without port specifiers. E.g. 192.168.1.1:2181,192.168.1.2:2181
+hbase.zookeeper.quorum = <%= @config.hbase_zookeeper_quorum %>
+# How long, in milliseconds, to maintain a Zookeeper connection. After the session times out, the connection is closed and a new one will be opened the next time AsyncHBase needs root.
+hbase.zookeeper.session.timeout = <%= @config.hbase_zookeeper_session_timeout %>
+# Path under which the znode for the -ROOT- region is located
+hbase.zookeeper.znode.parent = <%= @config.hbase_zookeeper_znode_parent %>
+
