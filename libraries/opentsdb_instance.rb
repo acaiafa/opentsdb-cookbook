@@ -188,6 +188,10 @@ module OpentsdbCookbook
       # @since 1.0.0
       def action_enable
         notifying_block do
+
+          # Create user
+          poise_service_user new_resource.user
+
           # Install Packages
           prereq_pack
           remote_file "#{new_resource.instance} :create opentsdb-#{new_resource.version}#{distro_ext}" do
