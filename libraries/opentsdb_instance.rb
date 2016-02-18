@@ -188,7 +188,6 @@ module OpentsdbCookbook
       # @since 1.0.0
       def action_enable
         notifying_block do
-
           # Create user
           poise_service_user new_resource.user
 
