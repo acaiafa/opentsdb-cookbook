@@ -232,6 +232,7 @@ module OpentsdbCookbook
 
       def service_options(service)
         service.service_name('opentsdb')
+        service.user new_resource.user
         service.command('/usr/share/opentsdb/bin/tsdb')
         service.provider :sysvinit
         service.options opentsdb_resource: new_resource
