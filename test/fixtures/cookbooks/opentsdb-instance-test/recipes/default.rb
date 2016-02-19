@@ -18,6 +18,7 @@ package pkg do
 end
 
 opentsdb_instance 'test' do
+  user 'opentsdb'
   version '2.2.0'
   logback_level 'WARN'
 end

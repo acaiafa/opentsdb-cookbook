@@ -35,7 +35,7 @@ MAX_OPEN_FILES=65535
 NAME=opentsdb
 PROG=/usr/bin/tsdb
 HOSTNAME=$(hostname --fqdn)
-USER=<% @options[:opentsdb_resource].user %>
+USER=<%= @options[:opentsdb_resource].user %>
 
 # Default directories
 LOG_DIR=/var/log/opentsdb
