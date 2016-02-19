@@ -128,7 +128,7 @@ module OpentsdbCookbook
 
       # HBASE Options
       attribute(:hbase_client_retries_number, kind_of: String, default: '10')
-      attribute(:hbase_increments_buffer_size, kind_of: String, default: '65,535')
+      attribute(:hbase_increments_buffer_size, kind_of: String, default: '65535')
       attribute(:hbase_ipc_client_connection_idle_timeout, kind_of: String, default: '300')
       attribute(:hbase_ipc_client_socket_receiveBufferSize, kind_of: String)
       attribute(:hbase_ipc_client_socket_sendBufferSize, kind_of: String)
