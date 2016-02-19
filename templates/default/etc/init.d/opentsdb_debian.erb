@@ -16,8 +16,8 @@
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 NAME=opentsdb
-TSD_USER=<% @options[:opentsdb_resource].user %>
-TSD_GROUP=<% @options[:opentsdb_resource].group %>
+TSD_USER=<%= @options[:opentsdb_resource].user %>
+TSD_GROUP=<%= @options[:opentsdb_resource].group %>
 DAEMON=/usr/share/opentsdb/bin/tsdb
 DAEMON_OPTS=tsd
 PID_FILE=/var/run/$NAME.pid
