@@ -51,12 +51,41 @@ LOG_FILE=$LOG_DIR/$NAME-$HOSTNAME-
 LOCK_FILE=$LOCK_DIR/$NAME
 PID_FILE=$PID_DIR/$NAME.pid
 CONFIG=/etc/opentsdb/${NAME}.conf
+OUT_FILE=${LOG_FILE}opentsdb.out
+ERR_FILE=${LOG_FILE}opentsdb.err
 
 # Create dirs if they don't exist
 [ -e $LOG_DIR ] || (mkdir -p $LOG_DIR && chown $USER: $LOG_DIR)
 [ -e $PID_DIR ] || mkdir -p $PID_DIR
 
 PROG_OPTS="tsd --config=${CONFIG}"
+
+rotate_logs()
+{
+   RFILE=$1
+   NUM_COPIES=$2
+
+   if [[ ! -f $RFILE ]];
+   then
+       echo "rotate_logs: invalid file - $RFILE"
+       return
+   fi
+
+   if [[ $NUM_COPIES < 1 ]];
+   then
+       echo "rotate_logs: invalid number of copies - $NUM_COPIES"
+       return
+   fi
+
+   i=${NUM_COPIES};
+   while [[ $i > 1 ]]
+   do
+      j=$i;
+      i=$((i-1));
+      [[ -f "${RFILE}.$i" ]] && mv "${RFILE}.$i" "${RFILE}.$j"
+   done
+   [[ -f "${RFILE}" ]] && mv "${RFILE}" "${RFILE}.1"
+}
 
 start() {
   echo -n "Starting ${NAME}: "
@@ -85,22 +114,25 @@ start() {
   <% end %>
   export JVMARGS
 
+  rotate_logs ${OUT_FILE} 5 
+  rotate_logs ${ERR_FILE} 5 
+
   if [ "`id -u -n`" == root ] ; then
     # Changes the owner of the log directory to allow non-root OpenTSDB
     # daemons to create and rename log files.
     chown $USER: $LOG_DIR > /dev/null 2>&1
     chown $USER: ${LOG_FILE}*opentsdb.log > /dev/null 2>&1
-    chown $USER: ${LOG_FILE}opentsdb.out > /dev/null 2>&1
-    chown $USER: ${LOG_FILE}opentsdb.err > /dev/null 2>&1
+    chown $USER: ${OUT_FILE} > /dev/null 2>&1
+    chown $USER: ${ERR_FILE} > /dev/null 2>&1
 
     # Changes the owner of the lock, and the pid files to allow
     # non-root OpenTSDB daemons to run /usr/share/opentsdb/bin/opentsdb_restart.py.
     touch $LOCK_FILE && chown $USER: $LOCK_FILE
     touch $PID_FILE && chown $USER: $PID_FILE
-    daemon --user $USER --pidfile $PID_FILE "$PROG $PROG_OPTS 1>> ${LOG_FILE}opentsdb.out 2>> ${LOG_FILE}opentsdb.err &"
+    daemon --user $USER --pidfile $PID_FILE "$PROG $PROG_OPTS 1>> ${OUT_FILE} 2>> ${ERR_FILE} &"
   else
     # Don't have to change user.
-    daemon --pidfile $PID_FILE "$PROG $PROG_OPTS 1>> ${LOG_FILE}opentsdb.out 2>> ${LOG_FILE}opentsdb.err &"
+    daemon --pidfile $PID_FILE "$PROG $PROG_OPTS 1>> ${OUT_FILE} 2>> ${ERR_FILE} &"
   fi
   retval=$?
   sleep 2
