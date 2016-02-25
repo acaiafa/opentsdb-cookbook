@@ -46,6 +46,9 @@ tsd.http.staticroot = <%= @config.http_staticroot %>
 # Where TSD should write it's cache files to
 tsd.http.cachedir = <%= @config.http_cachedir %>
 
+# Whether or not to allow deleting data points from storage during query time
+tsd.http.query.allow_delete = <%= @config.http_query_allow_delete %>
+
 # *** OPTIONAL SECTION ***
 <% if @config.http_request_cors_domains %>
 # A comma separated list of domain names to allow access to OpenTSDB when the Origin header is specified by the client. If empty, CORS requests are passed through without validation. The list may not contain the public wildcard * and specific domains at the same time.
