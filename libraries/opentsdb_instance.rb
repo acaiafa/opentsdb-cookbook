@@ -62,6 +62,7 @@ module OpentsdbCookbook
       # HTTP Configuration Parameters
       attribute(:http_staticroot, kind_of: String, default: '/usr/share/opentsdb/static/')
       attribute(:http_cachedir, kind_of: String, default: '/tmp/opentsdb')
+      attribute(:http_query_allow_delete, kind_of: [TrueClass, FalseClass], default: false)
       attribute(:http_request_cors_domains, kind_of: String)
       attribute(:http_request_cors_headers, kind_of: String, default: 'Authorization, Content-Type, Accept, Origin, User-Agent, DNT, Cache-Control, X-Mx-ReqToken, Keep-Alive, X-Requested-With, If-Modified-Since')
       attribute(:http_request_enable_chunked, kind_of: [TrueClass, FalseClass], default: false)
