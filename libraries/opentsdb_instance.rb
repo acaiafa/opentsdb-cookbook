@@ -162,6 +162,7 @@ module OpentsdbCookbook
       attribute(:hbase_zookeeper_znode_parent, kind_of: String, default: '/hbase')
 
       # Logback Parameters
+      attribute(:logback_configfile, kind_of: String, default: '/etc/opentsdb/opentsdb_logback.xml')
       attribute(:logback_stdout_pattern, kind_of: String, default: '%d{ISO8601} %-5level [%thread] %logger{0}: %msg%n')
       attribute(:logback_cyclic_maxsize, kind_of: Integer, default: 1024)
       attribute(:logback_file, kind_of: String, default: '/var/log/opentsdb/opentsdb.log')
@@ -174,7 +175,7 @@ module OpentsdbCookbook
       attribute(:logback_stdout_flag, kind_of: [TrueClass, FalseClass], default: false)
 
       # JVM Arg Option
-      attribute(:jvm_args, kind_of: String, default: '-Dlogback.configurationFile=/etc/opentsdb/opentsdb_logback.xml')
+      attribute(:jvm_args, kind_of: [NilClass, String], default: nil)
 
       # JMX Options
       attribute(:jmx_port, kind_of: Integer, default: 10_201)
