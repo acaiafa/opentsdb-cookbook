@@ -51,6 +51,7 @@ module OpentsdbCookbook
       # @see: http://opentsdb.net/docs/build/html/user_guide/configuration.html
       attribute(:port, kind_of: Integer, default: 4242)
       attribute(:bind, kind_of: String, default: '0.0.0.0')
+
       # Network Configuration Parameters
       attribute(:network_tcpnodelay, kind_of: [TrueClass, FalseClass], default: true)
       attribute(:network_keepalive, kind_of: [TrueClass, FalseClass], default: true)
@@ -173,7 +174,10 @@ module OpentsdbCookbook
       attribute(:logback_stdout_flag, kind_of: [TrueClass, FalseClass], default: false)
 
       # JVM Arg Option
-      attribute(:jvm_args, kind_of: [NilClass, String], default: nil)
+      attribute(:jvm_args, kind_of: String, default: "-Dlogback.configurationFile=/etc/opentsdb/opentsdb_logback.xml")
+
+      # JMX Options
+      attribute(:jmx_port, kind_of: Integer, default: 10201)
     end
   end
 
@@ -217,16 +221,19 @@ module OpentsdbCookbook
             action :create
           end
 
-          # Create opentsdb config file
-          %w(opentsdb.conf logback.xml).each do |t|
-            template "#{new_resource.instance} :create #{new_resource.config_dir}/#{t}" do
-              source "#{new_resource.source_dir}/#{t}.erb"
-              path "#{new_resource.config_dir}/#{t}"
+          # Create opentsdb config and logback file
+          { 
+            "#{new_resource.instance}.conf" => "opentsdb.conf.erb", 
+            "#{new_resource.instance}_logback.xml" => "logback.xml.erb" 
+          }.each_pair do |new_file, template_file|
+            template "#{new_resource.instance} :create #{new_resource.config_dir}/#{new_file}" do
+              source "#{new_resource.source_dir}/#{template_file}"
+              path "#{new_resource.config_dir}/#{new_file}"
               variables(config: new_resource)
               owner new_resource.user
               group new_resource.group
               cookbook new_resource.cookbook
-              notifies :restart, new_resource, :immediately
+              notifies :restart, new_resource, :delayed
               mode 0644
             end
           end
@@ -235,7 +242,7 @@ module OpentsdbCookbook
       end
 
       def service_options(service)
-        service.service_name('opentsdb')
+        service.service_name(new_resource.instance)
         service.user new_resource.user
         service.command('/usr/share/opentsdb/bin/tsdb')
         service.provider :sysvinit
