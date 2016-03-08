@@ -174,10 +174,10 @@ module OpentsdbCookbook
       attribute(:logback_stdout_flag, kind_of: [TrueClass, FalseClass], default: false)
 
       # JVM Arg Option
-      attribute(:jvm_args, kind_of: String, default: "-Dlogback.configurationFile=/etc/opentsdb/opentsdb_logback.xml")
+      attribute(:jvm_args, kind_of: String, default: '-Dlogback.configurationFile=/etc/opentsdb/opentsdb_logback.xml')
 
       # JMX Options
-      attribute(:jmx_port, kind_of: Integer, default: 10201)
+      attribute(:jmx_port, kind_of: Integer, default: 10_201)
     end
   end
 
@@ -222,9 +222,9 @@ module OpentsdbCookbook
           end
 
           # Create opentsdb config and logback file
-          { 
-            "#{new_resource.instance}.conf" => "opentsdb.conf.erb", 
-            "#{new_resource.instance}_logback.xml" => "logback.xml.erb" 
+          {
+            "#{new_resource.instance}.conf" => 'opentsdb.conf.erb',
+            "#{new_resource.instance}_logback.xml" => 'logback.xml.erb'
           }.each_pair do |new_file, template_file|
             template "#{new_resource.instance} :create #{new_resource.config_dir}/#{new_file}" do
               source "#{new_resource.source_dir}/#{template_file}"
