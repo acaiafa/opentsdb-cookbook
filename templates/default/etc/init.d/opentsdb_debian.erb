@@ -15,7 +15,7 @@
 ### END INIT INFO
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
-NAME=opentsdb
+NAME=<%= @options[:opentsdb_resource].instance %>
 TSD_USER=<%= @options[:opentsdb_resource].user %>
 TSD_GROUP=<%= @options[:opentsdb_resource].group %>
 DAEMON=/usr/share/opentsdb/bin/tsdb
