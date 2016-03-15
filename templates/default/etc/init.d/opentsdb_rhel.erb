@@ -32,7 +32,7 @@
 MAX_OPEN_FILES=65535
 
 # Default program options
-NAME=opentsdb
+NAME=<%= @options[:opentsdb_resource].instance %>
 PROG=/usr/bin/tsdb
 HOSTNAME=$(hostname --fqdn)
 USER=<%= @options[:opentsdb_resource].user %>
@@ -103,14 +103,15 @@ start() {
   fi
 
   # Set a default value for JVMARGS
-  : ${JMXPORT:=10201}
+  : ${LOGBACK_CONFIG_FILE:=<%= @options[:opentsdb_resource].logback_configfile %>}
+  : ${JMXPORT:=<%= @options[:opentsdb_resource].jmx_port %>}
   : ${JMXARGS:=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=$JMXPORT}
   : ${JVMXMX:=-Xmx6000m}
   <% if @options[:opentsdb_resource].jvm_args %>
   <%= ": ${JVMADD:=" + @options[:opentsdb_resource].jvm_args + "}" %>
-  : ${JVMARGS:=-DLOG_FILE_PREFIX=${LOG_FILE} ${JMXARGS} -enableassertions -enablesystemassertions $JVMXMX -XX:OnOutOfMemoryError=/usr/share/opentsdb/tools/opentsdb_restart.py ${JVMADD} }
+  : ${JVMARGS:=-Dlogback.configurationFile=${LOGBACK_CONFIG_FILE} -DLOG_FILE_PREFIX=${LOG_FILE} ${JMXARGS} -enableassertions -enablesystemassertions $JVMXMX -XX:OnOutOfMemoryError=/usr/share/opentsdb/tools/opentsdb_restart.py ${JVMADD} }
   <% else %>
-  : ${JVMARGS:=-DLOG_FILE_PREFIX=${LOG_FILE} ${JMXARGS} -enableassertions -enablesystemassertions $JVMXMX -XX:OnOutOfMemoryError=/usr/share/opentsdb/tools/opentsdb_restart.py}
+  : ${JVMARGS:=-Dlogback.configurationFile=${LOGBACK_CONFIG_FILE} -DLOG_FILE_PREFIX=${LOG_FILE} ${JMXARGS} -enableassertions -enablesystemassertions $JVMXMX -XX:OnOutOfMemoryError=/usr/share/opentsdb/tools/opentsdb_restart.py}
   <% end %>
   export JVMARGS
 
