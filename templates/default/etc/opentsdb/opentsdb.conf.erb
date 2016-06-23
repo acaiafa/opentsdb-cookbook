@@ -296,7 +296,7 @@ hbase.security.auth.94 = <%= @config.hbase_security_auth_94 %>
 hbase.security.auth.enable = <%= @config.hbase_security_auth_enable %>
 <% if @config.hbase_security_authentication %>
 # The type of authentication required for the HBase cluster. May be kerberos or simple.
-hbase.security.authentication = <%= @config.config.hbase_security_authentication %>
+hbase.security.authentication = <%= @config.hbase_security_authentication %>
 <% end %>
 <% if @config.hbase_security_simple_username %>
 # The user name for authenticating against an HBase cluster with simple authentication. (Not recommended)
