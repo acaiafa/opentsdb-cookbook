@@ -201,7 +201,11 @@ module OpentsdbCookbook
           prereq_pack
           remote_file "#{new_resource.instance} :create opentsdb-#{new_resource.version}#{distro_ext}" do
             path "/tmp/opentsdb-#{new_resource.version}#{distro_ext}"
-            source "https://github.com/OpenTSDB/opentsdb/releases/download/v#{new_resource.version}/opentsdb-#{new_resource.version}#{distro_ext}"
+            if new_resource.package_url
+              source "#{new_resource.package_url}/opentsdb-#{new_resource.version}#{distro_ext}"
+            else
+              source "https://github.com/OpenTSDB/opentsdb/releases/download/v#{new_resource.version}/opentsdb-#{new_resource.version}#{distro_ext}"
+            end
             action :create
           end
 
