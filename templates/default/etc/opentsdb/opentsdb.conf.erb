@@ -319,3 +319,24 @@ hbase.zookeeper.session.timeout = <%= @config.hbase_zookeeper_session_timeout %>
 # Path under which the znode for the -ROOT- region is located
 hbase.zookeeper.znode.parent = <%= @config.hbase_zookeeper_znode_parent %>
 
+# --------- ROLLUP Options (Since 2.4) ----------
+<% if @config.rollups_enable %>
+# Whether or not to enable rollup and pre-aggregation storage and writing. 
+tsd.rollups.enable = <%= @config.rollups_enable %>
+<% end %>
+<% if @config.rollups_tag_raw %>
+# Whether or not to tag non-rolled-up and non-pre-aggregated values.
+tsd.rollups.tag_raw = <%= @config.rollups_tag_raw %>
+<% end %>
+<% if @config.rollups_agg_tag_key %>
+# A special key to tag pre-aggregated data with when writing to storage.
+tsd.rollups.agg_tag_key = <%= @config.rollups_agg_tag_key %>
+<% end %>
+<% if @config.rollups_raw_agg_tag_value %>
+# A special tag value to non-rolled-up and non-pre-aggregated data when writing to storage.
+tsd.rollups.raw_agg_tag_value = <%= @config.rollups_raw_agg_tag_value %>
+<% end %>
+<% if @config.rollups_block_derived %>
+# Whether or not to block storing derived aggregations such as AVG and DEV.
+tsd.rollups.block_derived = <%= @config.rollups_block_derived %>
+<% end %>

@@ -174,6 +174,13 @@ module OpentsdbCookbook
       attribute(:logback_level, kind_of: String, default: 'INFO')
       attribute(:logback_stdout_flag, kind_of: [TrueClass, FalseClass], default: false)
 
+      # Rollup Parameters
+      attribute(:rollups_enable, kind_of: [TrueClass, FalseClass])
+      attribute(:rollups_tag_raw, kind_of: [TrueClass, FalseClass])
+      attribute(:rollups_agg_tag_key, kind_of: String)
+      attribute(:rollups_raw_agg_tag_value, kind_of: String)
+      attribute(:rollups_block_derived, kind_of: [TrueClass, FalseClass])
+
       # JVM Arg Option
       attribute(:jvm_args, kind_of: [NilClass, String], default: nil)
 
