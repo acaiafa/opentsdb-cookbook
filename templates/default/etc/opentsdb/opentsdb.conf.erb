@@ -321,7 +321,7 @@ hbase.zookeeper.znode.parent = <%= @config.hbase_zookeeper_znode_parent %>
 
 # --------- ROLLUP Options (Since 2.4) ----------
 <% if @config.rollups_enable %>
-# Whether or not to enable rollup and pre-aggregation storage and writing. 
+# Whether or not to enable rollup and pre-aggregation storage and writing.
 tsd.rollups.enable = <%= @config.rollups_enable %>
 <% end %>
 <% if @config.rollups_tag_raw %>
@@ -339,4 +339,11 @@ tsd.rollups.raw_agg_tag_value = <%= @config.rollups_raw_agg_tag_value %>
 <% if @config.rollups_block_derived %>
 # Whether or not to block storing derived aggregations such as AVG and DEV.
 tsd.rollups.block_derived = <%= @config.rollups_block_derived %>
+<% end %>
+
+<% if @config.custom_plugin_options && !@config.custom_plugin_options.empty? %>
+# --------- Custom Plugin Options ----------
+<% @config.custom_plugin_options.each do |k,v| %>
+<%= k %> = <%= v %>
+<% end %>
 <% end %>

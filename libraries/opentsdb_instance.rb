@@ -181,6 +181,8 @@ module OpentsdbCookbook
       attribute(:rollups_raw_agg_tag_value, kind_of: String)
       attribute(:rollups_block_derived, kind_of: [TrueClass, FalseClass])
 
+      attribute(:custom_plugin_options, kind_of: Hash)
+
       # JVM Arg Option
       attribute(:jvm_args, kind_of: [NilClass, String], default: nil)
 
