@@ -205,7 +205,6 @@ module OpentsdbCookbook
         notifying_block do
           # Create user
           poise_service_user new_resource.user
-
           # Install Packages
           prereq_pack
           remote_file "#{new_resource.instance} :create opentsdb-#{new_resource.version}#{distro_ext}" do
@@ -248,7 +247,7 @@ module OpentsdbCookbook
               group new_resource.group
               cookbook new_resource.cookbook
               notifies :restart, new_resource, :delayed
-              mode 0644
+              mode '0644'
             end
           end
         end
