@@ -25,6 +25,7 @@ opentsdb_instance 'opentsdb-write' do
   mode 'rw'
   logback_configfile "/etc/opentsdb/opentsdb-write_logback.xml"
   logback_level 'WARN'
+  custom_plugin_options ({ 'opt1' => 123, 'opt2' => 'tst' })
 end
 
 opentsdb_instance 'opentsdb-read' do
