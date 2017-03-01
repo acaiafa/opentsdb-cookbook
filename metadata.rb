@@ -3,7 +3,7 @@ maintainer 'Anthony Caiafa'
 maintainer_email 'acaiafa1@bloomberg.net'
 description 'Application cookbook which installs and configures OpenTSDB.'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version '1.1.13'
+version '1.1.14'
 
 supports 'redhat', '>= 5.8'
 supports 'centos', '>= 5.8'

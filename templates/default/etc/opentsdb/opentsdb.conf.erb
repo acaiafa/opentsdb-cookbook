@@ -24,7 +24,7 @@ tsd.network.reuseaddress = <%= @config.network_reuseaddress %>
 
 # Number of worker threads dedicated to Netty, defaults to # of CPUs * 2
 <% if @config.network_worker_threads %>
-tsd.network.worker_threads = <%= @conifg.network_worker_threads %>
+tsd.network.worker_threads = <%= @config.network_worker_threads %>
 <% else %>
 #tsd.network.worker_threads = 8
 <% end %>
@@ -123,7 +123,7 @@ tsd.core.storage_exception_handler.enable = <%= @config.core_storage_exception_h
 
 <% if @config.core_storage_exception_handler_plugin %>
 # The full class name of the storage exception handler plugin you wish to use.
-tsd.core.storage_exception_handler.plugin = <%= @core_storage_exception_handler_plugin %>
+tsd.core.storage_exception_handler.plugin = <%= @config.core_storage_exception_handler_plugin %>
 <% end %>
 
 # --------- STORAGE ----------
