@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenTSDB Service
+After=network.target
+
+[Service]
+PrivateTmp=yes
+LimitNOFILE=65536
+Environment=JAVA_HOME=<%= @options['java_home'] %>
+PIDFile=/var/run/<%= @options['opentsdb_resource'].instance %>.pid
+ExecStart=/usr/share/opentsdb/bin/tsdb tsd
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

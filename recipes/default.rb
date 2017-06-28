@@ -8,4 +8,6 @@ node.default['java']['jdk_version'] = '8'
 node.default['java']['accept_license_agreement'] = true
 include_recipe 'java::default'
 
-opentsdb_instance node['opentsdb']['service_name']
+opentsdb_instance node['opentsdb']['service_name'] do
+  java_home node['java']['java_home']
+end

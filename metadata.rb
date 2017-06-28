@@ -8,6 +8,7 @@ version '1.1.14'
 supports 'redhat', '>= 5.8'
 supports 'centos', '>= 5.8'
 supports 'ubuntu', '>= 12.04'
+supports 'debian', '>= 8'
 
 depends 'java'
 depends 'poise', '~> 2.2'
