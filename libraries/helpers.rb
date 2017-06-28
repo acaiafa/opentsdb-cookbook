@@ -5,7 +5,8 @@ module OpentsdbCookbook
     include Chef::DSL::IncludeRecipe
 
     def distro_ext
-      case node.platform_family
+      platform_family = node.attribute?('platform_family') ? node['platform_family'] : node['platform_version']
+      case platform_family
       when 'debian'
         '_all.deb'
       when 'rhel'
@@ -15,7 +16,8 @@ module OpentsdbCookbook
 
     def prereq_pack
       # RHEL world neds gnuplot
-      if node.platform_family == 'rhel'
+      platform_family = node.attribute?('platform_family') ? node['platform_family'] : node['platform_version']
+      if platform_family.eql?('rhel')
         package 'gnuplot' do
           action :install
         end

@@ -43,6 +43,10 @@ module OpentsdbCookbook
       # @return [String]
       attribute(:config_dir, kind_of: String, default: '/etc/opentsdb')
 
+      # @!attribute java_home
+      # @return [String]
+      attribute(:java_home, kind_of: String, default: ENV['JAVA_HOME'])
+
       # @!attribute source
       # @return [String]
       attribute(:source_dir, kind_of: String, default: 'etc/opentsdb')
@@ -247,7 +251,7 @@ module OpentsdbCookbook
               group new_resource.group
               cookbook new_resource.cookbook
               notifies :restart, new_resource, :delayed
-              mode 0644
+              mode '0644'
             end
           end
         end
@@ -255,12 +259,36 @@ module OpentsdbCookbook
       end
 
       def service_options(service)
+        platform_family = node.attribute?('platform_family') ? node['platform_family'] : node['platform_version']
+
+        sys_init = \
+          case node['platform']
+          when 'debian'
+            node['platform_version'].to_i >= 8 ? 'systemd' : 'sysvinit'
+          when 'ubuntu'
+            node['platform_version'].to_i >= 16 ? 'systemd' : 'sysvinit'
+          when 'centos', 'redhat'
+            node['platform_version'].to_i >= 7 ? 'systemd' : 'sysvinit'
+          else
+            'sysvinit'
+          end
+
+        template = \
+          case sys_init
+          when 'systemd'
+            'opentsdb:etc/systemd/opentsdb.service.erb'
+          when 'sysvinit'
+            "opentsdb:etc/init.d/opentsdb_#{platform_family}.erb"
+          else
+            "opentsdb:etc/init.d/opentsdb_#{platform_family}.erb"
+          end
+
         service.service_name(new_resource.instance)
         service.user new_resource.user
         service.command('/usr/share/opentsdb/bin/tsdb')
-        service.provider :sysvinit
-        service.options opentsdb_resource: new_resource
-        service.options :sysvinit, template: "opentsdb:etc/init.d/opentsdb_#{node.platform_family}.erb"
+        service.provider sys_init
+        service.options opentsdb_resource: new_resource, java_home: new_resource.java_home
+        service.options sys_init, template: template
       end
     end
   end
